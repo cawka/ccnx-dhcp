@@ -19,11 +19,14 @@
 
 #include "ccn_dhcp.h"
 
+#define CCN_DHCP_CONFIG SYSCONFDIR"/ccn_dhcp.conf"
+
+
 static void usage(const char *progname)
 {
     fprintf(stderr,
             "%s [-f config_file]\n"
-            "./ccn_dhcp.config is read by default if no config file is specified\n"
+            CCN_DHCP_CONFIG" is read by default if no config file is specified\n"
             , progname);
     exit(1);
 }

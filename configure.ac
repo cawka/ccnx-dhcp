@@ -10,6 +10,7 @@ AM_INIT_AUTOMAKE([1.10])
 
 # Checks for programs.
 AC_PROG_CC
+AM_PROG_CC_C_O
 
 # Checks for libraries.
 # CCNx Library
@@ -28,5 +29,6 @@ AX_CHECK_OPENSSL([],[AC_MSG_ERROR([Required OpenSSL libraries not found])])
 # AC_CHECK_FUNCS([gettimeofday memset strerror])
 
 AC_CONFIG_FILES([Makefile
+				 etc/Makefile
                  src/Makefile])
 AC_OUTPUT

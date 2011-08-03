@@ -1,0 +1,27 @@
+#! /bin/sh
+#
+#
+# PROVIDE: ccnx-dhcpd 
+# REQUIRE: DAEMON
+
+#
+# Add the following lines to /etc/rc.conf to enable git_daemon:
+#
+# ccnx_dhcpd_enable="YES"
+#
+# Optional parameters:
+# ccnx_dhcpd_flags=" -f path_to_config_file"
+
+. /etc/rc.subr
+
+name="ccnx_dhcpd"
+rcvar=`set_rcvar`
+
+: ${ccnx_dhcpd_enable:=NO}
+: ${ccnx_dhcpd_flags:=""}
+
+command="/usr/local/bin/ccndhcpserver $ccnx_dhcpd_flags"
+
+load_rc_config $name
+run_rc_command "$@"
+

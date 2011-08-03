@@ -1,0 +1,5 @@
+#Format
+#prefix gateway(ip address or FQDN) port
+
+ccnx:/ ccnx-gateway.company.com 9695
+

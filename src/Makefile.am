@@ -7,6 +7,7 @@ ccn_dhcp.h	\
 ccndhcp.c	\
 ccndhcpserver.c
 
+ccndhcpserver_CFLAGS=$(AM_CFLAGS) -DSYSCONFDIR=\"$(sysconfdir)\"
 ccndhcpserver_LDFLAGS=$(CCNX_LDFLAGS) $(OPENSSL_LDFLAGS)
 ccndhcpserver_LDADD=$(CCNX_LIBS) $(OPENSSL_LIBS)
 
