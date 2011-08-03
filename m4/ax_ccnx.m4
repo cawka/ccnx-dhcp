@@ -12,9 +12,7 @@
 #
 #     AC_SUBST(CCNX_CFLAGS) / AC_SUBST(CCNX_LDFLAGS) / AC_SUBST(CCNX_LIBS)
 #
-#   And sets:
-#
-#    HAVE_CCNX 
+#   And calls ACTION-IF-FOUND or ACTION-IF-NOT-FOUND appropriately
 #
 # LICENSE
 #	Copyright (c) 2011 Alexander Afanasyev <alexander.afanasyev@ucla.edu>
@@ -26,26 +24,26 @@
 
 AC_DEFUN([AX_CCNX],
 [
-AC_ARG_WITH([ccnx],
-  [AS_HELP_STRING([--with-ccnx@<:@=ARG@:>@],
-    [use CCNx library from a standard location (ARG=yes),
-     from the specified location (ARG=<path>),
-     or disable it (ARG=no)
-     @<:@ARG=yes@:>@ ])],
+  AC_ARG_WITH([ccnx],
+    [AS_HELP_STRING([--with-ccnx=DIR],
+      [root directory for CCNx library])],
     [
-    if test "$withval" = "no"; then
-      want_ccnx="no"
-    elif test "$withval" = "yes"; then
-      want_ccnx="yes"
-      ac_ccnx_path=""
-    else
-      want_ccnx="yes"
-      ac_ccnx_path="$withval"
-    fi
+      case "$withval" in
+      "" | y | ye | yes | n | no)
+        AC_MSG_ERROR([Invalid --with-ccnx value])
+        ;;
+      *)
+        basedirs="$withval"
+        indir="in $withval"
+        ;;
+      esac
     ],
-    [want_ccnx="yes"])
-
-if test "x$want_ccnx" = "xyes"; then
+    [
+      basedirs="/usr /usr/local /opt /opt/local"
+      indir=""
+    ]
+  )
+ 
   ccnx_lib_version_req=ifelse([$1], ,0.4.0,$1)
   ccnx_lib_version_req_major=`expr $ccnx_lib_version_req : '\([[0-9]]*\)'`
   ccnx_lib_version_req_minor=`expr $ccnx_lib_version_req : '[[0-9]]*\.\([[0-9]]*\)'`
@@ -55,10 +53,10 @@ if test "x$want_ccnx" = "xyes"; then
   fi
   WANT_CCNX_VERSION=`expr $ccnx_lib_version_req_major \* 100000 \+  $ccnx_lib_version_req_minor \* 1000 \+ $ccnx_lib_version_req_sub_minor`
 
-  AC_MSG_CHECKING(for CCNx library with API version >= $ccnx_lib_version_req)
+  AC_MSG_CHECKING(for CCNx library with API version >= $ccnx_lib_version_req $indir)
   succeeded=no
+  found=false
 
-  basedirs="/usr /usr/local /opt /opt/local"
   libsubdirs="lib64 lib"
   
   for ccnx_base_tmp in $basedirs ; do
@@ -68,13 +66,24 @@ if test "x$want_ccnx" = "xyes"; then
       done
       CCNX_LDFLAGS="-L$ccnx_base_tmp/$libsubdir"
       CCNX_CFLAGS="-I$ccnx_base_tmp/include"
+      CCNX_LIBS="-lccn"
+      found=true
       break;
     fi
   done
 
-  AC_REQUIRE([AC_PROG_CC])
-  AC_LANG_PUSH([C])
-    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+  if ! $found; then
+    AC_MSG_RESULT([no])
+  else
+    save_LIBS="$LIBS"
+    save_LDFLAGS="$LDFLAGS"
+    save_CFLAGS="$CFLAGS"
+    LDFLAGS="$LDFLAGS $CCNX_LDFLAGS"
+    LIBS="$CCNX_LIBS $LIBS"
+    CFLAGS="$CCNX_CFLAGS $CFLAGS"
+
+    AC_REQUIRE([AC_PROG_CC])
+    AC_LINK_IFELSE([AC_LANG_PROGRAM([[
         @%:@include <ccn/ccn.h>
       ]], [[
         #if CCN_API_VERSION >= $WANT_CCNX_VERSION
@@ -83,12 +92,15 @@ if test "x$want_ccnx" = "xyes"; then
         #  error CCNx API version is too old
         #endif
     ]])],[
-      AC_MSG_RESULT(yes)
-      CCNX_LIBS="-lccn"
+      AC_MSG_RESULT([yes])
       succeeded=yes
     ],[
     ])
-  AC_LANG_POP([C]) 
+
+    CFLAGS="$save_CFLAGS"
+    LDFLAGS="$save_LDFLAGS"
+    LIBS="$save_LIBS"
+  fi
 
   if test "$succeeded" != "yes" ; then
     # execute ACTION-IF-NOT-FOUND (if present):
@@ -97,11 +109,9 @@ if test "x$want_ccnx" = "xyes"; then
     AC_SUBST(CCNX_CFLAGS)
     AC_SUBST(CCNX_LDFLAGS)
     AC_SUBST(CCNX_LIBS)
-    AC_DEFINE(HAVE_CCNX,,[define if the CCNx library is available])
     # execute ACTION-IF-FOUND (if present):
     ifelse([$2], , :, [$2])
   fi
-fi
 
 ])
 

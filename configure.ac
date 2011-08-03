@@ -13,10 +13,10 @@ AC_PROG_CC
 
 # Checks for libraries.
 # CCNx Library
-AX_CCNX([0.4.0])
+AX_CCNX([0.4.0],[],[AC_MSG_ERROR([Required CCNx library not found])])
 
 # OpenSSL
-AX_CHECK_OPENSSL
+AX_CHECK_OPENSSL([],[AC_MSG_ERROR([Required OpenSSL libraries not found])])
 
 # Checks for header files.
 # AC_CHECK_HEADERS([netdb.h netinet/in.h stdlib.h string.h sys/time.h unistd.h])
