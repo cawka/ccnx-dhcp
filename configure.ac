@@ -12,6 +12,11 @@ AM_INIT_AUTOMAKE([1.10])
 AC_PROG_CC
 
 # Checks for libraries.
+# CCNx Library
+AX_CCNX([0.4.0])
+
+# OpenSSL
+AX_CHECK_OPENSSL
 
 # Checks for header files.
 # AC_CHECK_HEADERS([netdb.h netinet/in.h stdlib.h string.h sys/time.h unistd.h])

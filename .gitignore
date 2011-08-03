@@ -13,4 +13,6 @@ configure
 depcomp
 install-sh
 missing
+src/ccndhcpclient
+src/ccndhcpserver
 

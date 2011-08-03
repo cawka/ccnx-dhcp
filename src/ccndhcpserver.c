@@ -16,7 +16,8 @@
 #include <ccn/ccn.h>
 #include <ccn/uri.h>
 #include <ccn/charbuf.h>
-#include <ccn/ccn_dhcp.h>
+
+#include "ccn_dhcp.h"
 
 static void usage(const char *progname)
 {

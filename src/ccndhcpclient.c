@@ -15,7 +15,8 @@
 #include <ccn/ccn.h>
 #include <ccn/uri.h>
 #include <ccn/charbuf.h>
-#include <ccn/ccn_dhcp.h>
+
+#include "ccn_dhcp.h"
 
 int get_dhcp_content(struct ccn *h, struct ccn_dhcp_entry *tail)
 {

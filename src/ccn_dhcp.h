@@ -10,6 +10,9 @@
 #define CCN_DHCP_LIFETIME ((~0U) >> 1)
 #define CCN_DHCP_MCASTTTL (-1)
 
+// Extension of DTAG that identifies ccnb-encoded elements
+#define CCN_DTAG_DHCPContent 115
+
 struct ccn_dhcp_entry {
     struct ccn_charbuf *name_prefix;
     const char address[20];
